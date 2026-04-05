@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Lukarix Sınav Dızlamaaa</title>
+<title>Lukarix Sınav dızlamaaa</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
@@ -47,10 +47,36 @@ button {
     display:none;
 }
 
+/* MENU BUTTON */
+.menu-btn {
+    position:fixed;
+    top:10px;
+    left:10px;
+    font-size:25px;
+    background:black;
+    color:white;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    z-index:1000;
+}
+
+/* OVERLAY */
+#overlay {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    display:none;
+    z-index:998;
+}
+
 /* SIDEBAR */
 .sidebar {
     position:fixed;
-    left:0;
+    left:-250px;
     top:0;
     width:220px;
     height:100%;
@@ -58,6 +84,11 @@ button {
     padding:20px;
     color:white;
     transition:0.4s;
+    z-index:999;
+}
+
+.sidebar.active {
+    left:0;
 }
 
 .sidebar h3 {
@@ -81,7 +112,6 @@ button {
 
 /* VIEWER */
 .viewer {
-    margin-left:240px;
     height:100vh;
     overflow:auto;
     text-align:center;
@@ -97,11 +127,11 @@ canvas {
 .toolbar {
     position:fixed;
     top:0;
-    left:220px;
-    width:calc(100% - 220px);
+    width:100%;
     background:black;
     color:white;
     padding:10px;
+    text-align:center;
 }
 
 /* ANIM */
@@ -116,22 +146,28 @@ canvas {
 
 <!-- LOGIN -->
 <div id="login">
-    <h2 style="color:white;">🔐 Giriş yap olm</h2>
+    <h2 style="color:white;">🔐 Giriş uap olmm</h2>
     <input type="password" id="pass" placeholder="Şifre">
     <br>
-    <button onclick="login()">Giriş</button>
+    <button onclick="login()">Giriş helelele</button>
     <p id="err" style="color:red;"></p>
 </div>
 
 <!-- APP -->
 <div id="app">
 
+    <!-- MENU BUTTON -->
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
+    <!-- OVERLAY -->
+    <div id="overlay" onclick="closeMenu()"></div>
+
     <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h3>📚 PDF Seç(Kusura bakma senaryo geregi boyle)</h3>
-        <div class="pdf-btn" onclick="openPDF('1.pdf')">Sınav dızlama</div>
-        <div class="pdf-btn" onclick="openPDF('1(kopya).pdf')">Dızlama(kopya).pdf</div>
-        <div class="pdf-btn" onclick="openPDF('deneme.pdf')">deneme(test).pdf</div>
+    <div class="sidebar" id="sidebar">
+        <h3>📚 PDF Seç brother</h3>
+        <div class="pdf-btn" onclick="openPDF('1.pdf')">Dızlama sınav</div>
+        <div class="pdf-btn" onclick="openPDF('1(kopya).pdf')">Sınav kopya</div>
+        <div class="pdf-btn" onclick="openPDF('deneme.pdf')">Test</div>
     </div>
 
     <!-- TOOLBAR -->
@@ -164,7 +200,27 @@ function login() {
     }
 }
 
+/* MENU */
+function toggleMenu() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    sidebar.classList.toggle("active");
+
+    if(sidebar.classList.contains("active")) {
+        overlay.style.display = "block";
+    } else {
+        overlay.style.display = "none";
+    }
+}
+
+function closeMenu() {
+    document.getElementById("sidebar").classList.remove("active");
+    document.getElementById("overlay").style.display = "none";
+}
+
 function openPDF(file) {
+    closeMenu(); // PDF seçince menü kapansın
     pageNum=1;
     pdfjsLib.getDocument(file).promise.then(pdf=>{
         pdfDoc=pdf;
